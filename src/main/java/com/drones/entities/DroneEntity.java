@@ -1,12 +1,15 @@
 package com.drones.entities;
 
 import com.drones.enums.DroneState;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,6 +25,8 @@ public class DroneEntity {
     private int batteryCapacity;
     @Enumerated(EnumType.STRING)
     private DroneState state;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<MedicationEntity> loadedMedications;
 
     // Constructors
     public DroneEntity() {
@@ -84,6 +89,14 @@ public class DroneEntity {
 
     public void setState(DroneState state) {
         this.state = state;
+    }
+
+    public List<MedicationEntity> getLoadedMedications() {
+        return loadedMedications;
+    }
+
+    public void setLoadedMedications(List<MedicationEntity> loadedMedications) {
+        this.loadedMedications = loadedMedications;
     }
 }
 

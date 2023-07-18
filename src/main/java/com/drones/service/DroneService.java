@@ -4,9 +4,11 @@ import com.drones.dtos.DroneDTO;
 import com.drones.dtos.MedicationDTO;
 import com.drones.entities.DroneAuditLogEntity;
 import com.drones.entities.DroneEntity;
+import com.drones.entities.MedicationEntity;
 import com.drones.enums.DroneState;
 import com.drones.repository.DroneAuditLogRepository;
 import com.drones.repository.DroneRepository;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ public class DroneService {
     }
 
     public void loadMedications(String serialNumber, List<MedicationDTO> medications) {
-        DroneEntity droneEntity = droneRepository.findById(serialNumber)
+        DroneEntity droneEntity = droneRepository.findBySerialNumber(serialNumber)
             .orElseThrow(() -> new IllegalArgumentException("Drone not found"));
 
         // Check weight limit and battery level
@@ -53,7 +55,21 @@ public class DroneService {
         }
 
         // Perform the loading operation
-        // ...
+        List<MedicationEntity> loadedMedications = medications.stream().map(medicationDTO -> {
+            MedicationEntity medicationEntity = new MedicationEntity();
+            medicationEntity.setName(medicationDTO.getName());
+            medicationEntity.setWeight(medicationDTO.getWeight());
+            medicationEntity.setCode(medicationDTO.getCode());
+            medicationEntity.setImage(medicationDTO.getImage());
+            return medicationEntity;
+        }).collect(Collectors.toList());
+
+        droneEntity.setLoadedMedications(loadedMedications);
+        droneEntity.setState(DroneState.LOADED);
+
+        // Save the droneEntity in database
+        droneRepository.save(droneEntity);
+
     }
 
     public List<MedicationDTO> getLoadedMedications(String serialNumber) {
