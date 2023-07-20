@@ -1,5 +1,6 @@
 package com.drones.entities;
 
+import com.drones.enums.DroneModel;
 import com.drones.enums.DroneState;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -20,7 +21,7 @@ public class DroneEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String serialNumber;
-    private String model;
+    private DroneModel model;
     private int weightLimit;
     private int batteryCapacity;
     @Enumerated(EnumType.STRING)
@@ -33,7 +34,7 @@ public class DroneEntity {
 
     }
 
-    public DroneEntity(String serialNumber, String model, int weightLimit, int batteryCapacity,
+    public DroneEntity(String serialNumber, DroneModel model, int weightLimit, int batteryCapacity,
         DroneState state) {
         this.serialNumber = serialNumber;
         this.model = model;
@@ -59,11 +60,11 @@ public class DroneEntity {
         this.serialNumber = serialNumber;
     }
 
-    public String getModel() {
+    public DroneModel getModel() {
         return model;
     }
 
-    public void setModel(String model) {
+    public void setModel(DroneModel model) {
         this.model = model;
     }
 

@@ -2,8 +2,10 @@ package com.drones.controller;
 
 import com.drones.dtos.DroneDTO;
 import com.drones.dtos.MedicationDTO;
+import com.drones.exception.DroneException;
 import com.drones.service.DroneService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +22,10 @@ public class DroneController {
     }
 
     @PostMapping
-    public DroneDTO registerDrone(@RequestBody DroneDTO droneDto) {
-        return droneService.registerDrone(droneDto);
+    public ResponseEntity<DroneDTO> registerDrone(@RequestBody DroneDTO droneDto)
+        throws DroneException {
+        DroneDTO registeredDrone = droneService.registerDrone(droneDto);
+        return ResponseEntity.ok(registeredDrone);
     }
 
     @PostMapping("/{serialNumber}/load")
