@@ -4,6 +4,7 @@ import com.drones.dtos.DroneDTO;
 import com.drones.dtos.MedicationDTO;
 import com.drones.exception.DroneException;
 import com.drones.service.DroneService;
+import com.drones.util.DroneResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,30 +23,31 @@ public class DroneController {
     }
 
     @PostMapping
-    public ResponseEntity<DroneDTO> registerDrone(@RequestBody DroneDTO droneDto)
+    public ResponseEntity<DroneResponse<String>> registerDrone(@RequestBody DroneDTO droneDto)
         throws DroneException {
-        DroneDTO registeredDrone = droneService.registerDrone(droneDto);
-        return ResponseEntity.ok(registeredDrone);
+        return droneService.registerDrone(droneDto);
     }
 
     @PostMapping("/{serialNumber}/load")
-    public void loadMedications(@PathVariable String serialNumber,
-        @RequestBody List<MedicationDTO> medications) {
-        droneService.loadMedications(serialNumber, medications);
+    public ResponseEntity<DroneResponse<String>> loadMedications(@PathVariable String serialNumber,
+        @RequestBody List<MedicationDTO> medications) throws DroneException {
+        return droneService.loadMedications(serialNumber, medications);
     }
 
     @GetMapping("/{serialNumber}/loaded")
-    public List<MedicationDTO> getLoadedMedications(@PathVariable String serialNumber) {
+    public ResponseEntity<DroneResponse<List<MedicationDTO>>> getLoadedMedications(
+        @PathVariable String serialNumber) {
         return droneService.getLoadedMedications(serialNumber);
     }
 
     @GetMapping("/available")
-    public List<DroneDTO> getAvailableDrones() {
+    public ResponseEntity<DroneResponse<List<DroneDTO>>> getAvailableDrones() {
         return droneService.getAvailableDrones();
     }
 
     @GetMapping("/{serialNumber}/battery")
-    public int getBatteryLevel(@PathVariable String serialNumber) {
+    public ResponseEntity<DroneResponse<Integer>> getBatteryLevel(
+        @PathVariable String serialNumber) {
         return droneService.getBatteryLevel(serialNumber);
     }
 }
