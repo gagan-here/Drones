@@ -1,11 +1,12 @@
 package com.drones.dtos;
 
+import com.drones.enums.DroneModel;
 import com.drones.enums.DroneState;
 
 public class DroneDTO {
 
     private String serialNumber;
-    private String model;
+    private DroneModel model;
     private int weightLimit;
     private int batteryCapacity;
     private DroneState state;
@@ -15,7 +16,7 @@ public class DroneDTO {
 
     }
 
-    public DroneDTO(String serialNumber, String model, int weightLimit, int batteryCapacity,
+    public DroneDTO(String serialNumber, DroneModel model, int weightLimit, int batteryCapacity,
         DroneState state) {
         this.serialNumber = serialNumber;
         this.model = model;
@@ -33,11 +34,11 @@ public class DroneDTO {
         this.serialNumber = serialNumber;
     }
 
-    public String getModel() {
+    public DroneModel getModel() {
         return model;
     }
 
-    public void setModel(String model) {
+    public void setModel(DroneModel model) {
         this.model = model;
     }
 

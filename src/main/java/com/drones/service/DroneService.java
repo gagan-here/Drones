@@ -4,10 +4,14 @@ import com.drones.dtos.DroneDTO;
 import com.drones.dtos.MedicationDTO;
 import com.drones.entities.DroneAuditLogEntity;
 import com.drones.entities.DroneEntity;
+import com.drones.entities.MedicationEntity;
 import com.drones.enums.DroneState;
+import com.drones.exception.DroneException;
 import com.drones.repository.DroneAuditLogRepository;
 import com.drones.repository.DroneRepository;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +30,10 @@ public class DroneService {
         this.auditLogRepository = auditLogRepository;
     }
 
-    public DroneDTO registerDrone(DroneDTO droneDto) {
+    public DroneDTO registerDrone(DroneDTO droneDto) throws DroneException {
+        if (droneDto.getWeightLimit() > 500){
+            throw new DroneException(HttpStatus.BAD_REQUEST,"Drone cannot have weight greater than 500gm");
+        }
         DroneEntity droneEntity = new DroneEntity(
             droneDto.getSerialNumber(),
             droneDto.getModel(),
@@ -39,7 +46,7 @@ public class DroneService {
     }
 
     public void loadMedications(String serialNumber, List<MedicationDTO> medications) {
-        DroneEntity droneEntity = droneRepository.findById(serialNumber)
+        DroneEntity droneEntity = droneRepository.findBySerialNumber(serialNumber)
             .orElseThrow(() -> new IllegalArgumentException("Drone not found"));
 
         // Check weight limit and battery level
@@ -53,16 +60,39 @@ public class DroneService {
         }
 
         // Perform the loading operation
-        // ...
+        List<MedicationEntity> loadedMedications = medications.stream().map(medicationDTO -> {
+            MedicationEntity medicationEntity = new MedicationEntity();
+            medicationEntity.setName(medicationDTO.getName());
+            medicationEntity.setWeight(medicationDTO.getWeight());
+            medicationEntity.setCode(medicationDTO.getCode());
+            medicationEntity.setImage(medicationDTO.getImage());
+            return medicationEntity;
+        }).collect(Collectors.toList());
+
+        droneEntity.setLoadedMedications(loadedMedications);
+        droneEntity.setState(DroneState.LOADED);
+
+        // Save the droneEntity in database
+        droneRepository.save(droneEntity);
+
     }
 
     public List<MedicationDTO> getLoadedMedications(String serialNumber) {
-        DroneEntity droneEntity = droneRepository.findById(serialNumber)
-            .orElseThrow(() -> new IllegalArgumentException("Drone not found"));
+        DroneEntity droneEntity = droneRepository.findBySerialNumber(serialNumber)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Drone with specified serial number doesnot exist"));
 
         // Retrieve the loaded medications for the drone
-        // ...
-        return null; // Placeholder
+        return droneEntity.getLoadedMedications().stream().map(
+            medicationEntity -> {
+                MedicationDTO medicationDTO = new MedicationDTO();
+                medicationDTO.setName(medicationEntity.getName());
+                medicationDTO.setWeight(medicationEntity.getWeight());
+                medicationDTO.setCode(medicationEntity.getCode());
+                medicationDTO.setImage(medicationEntity.getImage());
+                return medicationDTO;
+            }
+        ).collect(Collectors.toList());
     }
 
     public List<DroneDTO> getAvailableDrones() {
@@ -73,8 +103,9 @@ public class DroneService {
     }
 
     public int getBatteryLevel(String serialNumber) {
-        DroneEntity droneEntity = droneRepository.findById(serialNumber)
-            .orElseThrow(() -> new IllegalArgumentException("Drone not found"));
+        DroneEntity droneEntity = droneRepository.findBySerialNumber(serialNumber)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Drone with specified serial number doesnot exist"));
 
         return droneEntity.getBatteryCapacity();
     }
