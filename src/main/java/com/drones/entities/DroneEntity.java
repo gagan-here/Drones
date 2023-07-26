@@ -21,6 +21,7 @@ public class DroneEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String serialNumber;
+    @Enumerated(EnumType.STRING)
     private DroneModel model;
     private int weightLimit;
     private int batteryCapacity;

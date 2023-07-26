@@ -1,7 +1,9 @@
 package com.drones.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class MedicationEntity {
@@ -11,6 +13,9 @@ public class MedicationEntity {
     private int weight;
     private String code;
     private String image;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private DroneEntity drone;
 
     public MedicationEntity() {
 

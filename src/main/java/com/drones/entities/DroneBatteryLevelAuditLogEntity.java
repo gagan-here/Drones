@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "drone_audit_log")
-public class DroneAuditLogEntity {
+public class DroneBatteryLevelAuditLogEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +17,11 @@ public class DroneAuditLogEntity {
 
     private LocalDateTime timestamp;
 
-    public DroneAuditLogEntity() {
+    public DroneBatteryLevelAuditLogEntity() {
         this.timestamp = LocalDateTime.now();
     }
 
-    public DroneAuditLogEntity(String droneSerialNumber, int batteryLevel) {
+    public DroneBatteryLevelAuditLogEntity(String droneSerialNumber, int batteryLevel) {
         this.droneSerialNumber = droneSerialNumber;
         this.batteryLevel = batteryLevel;
         this.timestamp = LocalDateTime.now();

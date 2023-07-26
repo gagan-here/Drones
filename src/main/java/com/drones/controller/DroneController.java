@@ -2,7 +2,6 @@ package com.drones.controller;
 
 import com.drones.dtos.DroneDTO;
 import com.drones.dtos.MedicationDTO;
-import com.drones.exception.DroneException;
 import com.drones.service.DroneService;
 import com.drones.util.DroneResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +22,13 @@ public class DroneController {
     }
 
     @PostMapping
-    public ResponseEntity<DroneResponse<String>> registerDrone(@RequestBody DroneDTO droneDto)
-        throws DroneException {
+    public ResponseEntity<DroneResponse<String>> registerDrone(@RequestBody DroneDTO droneDto) {
         return droneService.registerDrone(droneDto);
     }
 
     @PostMapping("/{serialNumber}/load")
     public ResponseEntity<DroneResponse<String>> loadMedications(@PathVariable String serialNumber,
-        @RequestBody List<MedicationDTO> medications) throws DroneException {
+        @RequestBody List<MedicationDTO> medications) {
         return droneService.loadMedications(serialNumber, medications);
     }
 
