@@ -41,7 +41,7 @@ Use a tool like Postman or curl to send HTTP requests to the API endpoints. Here
     ```json
     {
        "serialNumber": "DRN001",
-       "model": "Heavyweight",
+       "model": "HEAVYWEIGHT",
        "weightLimit": 500,
        "batteryCapacity": 80,
        "state": "IDLE"
@@ -50,12 +50,14 @@ Use a tool like Postman or curl to send HTTP requests to the API endpoints. Here
 * Load medication to a drone:`POST /drones/DRN001/load` <br>
   Request Body: <br> 
     ```json
-    {
-       "name": "Medication 1",
-       "weight": 200,
-       "code": "M001",
-       "image": "medication1.jpg"
-    }
+    [
+      {
+           "name": "Medication 1",
+           "weight": 200,
+           "code": "M001",
+           "image": "medication1.jpg"
+      }
+    ]
 
 * Get loaded medications for a drone: `GET /drones/DRN001/loaded`
 
