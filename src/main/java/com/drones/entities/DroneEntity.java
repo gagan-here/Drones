@@ -27,7 +27,7 @@ public class DroneEntity {
     private int batteryCapacity;
     @Enumerated(EnumType.STRING)
     private DroneState state;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "drone")
     private List<MedicationEntity> loadedMedications;
 
     // Constructors
