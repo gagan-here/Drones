@@ -91,6 +91,10 @@ public class DroneService {
                 medicationEntity.setWeight(medicationDTO.getWeight());
                 medicationEntity.setCode(medicationDTO.getCode());
                 medicationEntity.setImage(medicationDTO.getImage());
+
+                // Set the DroneEntity in the MedicationEntity
+                medicationEntity.setDrone(drone);
+
                 return medicationEntity;
             }).collect(Collectors.toList());
 
