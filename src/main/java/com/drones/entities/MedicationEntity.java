@@ -14,7 +14,7 @@ public class MedicationEntity {
     private String code;
     private String image;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private DroneEntity drone;
 
     public MedicationEntity() {
