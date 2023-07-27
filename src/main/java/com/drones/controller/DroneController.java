@@ -26,13 +26,13 @@ public class DroneController {
         return droneService.registerDrone(droneDto);
     }
 
-    @PostMapping("/{serialNumber}/load")
+    @PostMapping("/{serialNumber}/loadMedications")
     public ResponseEntity<DroneResponse<String>> loadMedications(@PathVariable String serialNumber,
         @RequestBody List<MedicationDTO> medications) {
-        return droneService.loadMedications(serialNumber, medications);
+        return droneService.loadMedicationItems(serialNumber, medications);
     }
 
-    @GetMapping("/{serialNumber}/loaded")
+    @GetMapping("/{serialNumber}/loadedMedications")
     public ResponseEntity<DroneResponse<List<MedicationDTO>>> getLoadedMedications(
         @PathVariable String serialNumber) {
         return droneService.getLoadedMedications(serialNumber);

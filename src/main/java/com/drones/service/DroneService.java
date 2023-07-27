@@ -34,16 +34,25 @@ public class DroneService {
     }
 
     public ResponseEntity<DroneResponse<String>> registerDrone(DroneDTO droneDto) {
-        if (droneDto.getWeightLimit() > 500) {
-            DroneResponse<String> response = new DroneResponse<>(400,
-                "Drone cannot have weight greater than 500gm");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
         Optional<DroneEntity> droneEntity = droneRepository.findBySerialNumber(
             droneDto.getSerialNumber());
         if (droneEntity.isPresent()) {
             DroneResponse<String> response = new DroneResponse<>(400,
                 "Drone with serial number: " + droneDto.getSerialNumber() + " already exists.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        // Check if weight limit of drone is > 500gm
+        if (droneDto.getWeightLimit() > 500) {
+            DroneResponse<String> response = new DroneResponse<>(400,
+                "Drone cannot have weight greater than 500gm");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        // Prevent the drone from being in LOADING state if the battery level is below 25%;
+        if (droneDto.getState() == DroneState.LOADING && droneDto.getBatteryCapacity() < 25) {
+            DroneResponse<String> response = new DroneResponse<>(400,
+                "Drone cannot be in LOADING state with low battery level.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
@@ -59,28 +68,23 @@ public class DroneService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<DroneResponse<String>> loadMedications(String serialNumber,
+    public ResponseEntity<DroneResponse<String>> loadMedicationItems(String serialNumber,
         List<MedicationDTO> medications) {
         Optional<DroneEntity> droneEntity = droneRepository.findBySerialNumber(serialNumber);
 
         if (droneEntity.isPresent()) {
-            // Check weight limit and battery level
             DroneEntity drone = droneEntity.get();
 
             int loadedWeight = calculateLoadedWeight(medications);
+
+            // Prevent the drone from being loaded with more weight that it can carry
             if (loadedWeight > drone.getWeightLimit()) {
                 DroneResponse<String> response = new DroneResponse<>(400,
                     "Drone weight limit exceeded.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
-            if (drone.getState() == DroneState.LOADING
-                && drone.getBatteryCapacity() < 25) {
-                DroneResponse<String> response = new DroneResponse<>(400,
-                    "Drone cannot be loaded with low battery level.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-            }
 
-            // Perform the loading operation
+            // Convert list of MedicationDTO to list of MedicationEntity
             List<MedicationEntity> loadedMedications = medications.stream().map(medicationDTO -> {
                 MedicationEntity medicationEntity = new MedicationEntity();
                 medicationEntity.setName(medicationDTO.getName());
@@ -90,10 +94,11 @@ public class DroneService {
                 return medicationEntity;
             }).collect(Collectors.toList());
 
+            // Load medication items into drone and update the state to LOADED
             drone.setLoadedMedications(loadedMedications);
             drone.setState(DroneState.LOADED);
 
-            // Save the droneEntity in database
+            // Save the drone in database
             droneRepository.save(drone);
             DroneResponse<String> response = new DroneResponse<>(200,
                 "Medications loaded in drone successfully");
@@ -162,7 +167,7 @@ public class DroneService {
         int batteryLevel = droneEntity.getBatteryCapacity();
         String droneSerialNumber = droneEntity.getSerialNumber();
 
-        // Create audit log entry
+        // Create battery level audit log entry
         DroneBatteryLevelAuditLogEntity auditLogEntity = new DroneBatteryLevelAuditLogEntity(
             droneSerialNumber,
             batteryLevel);

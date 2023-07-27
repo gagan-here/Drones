@@ -14,7 +14,7 @@ public class MedicationEntity {
     private String code;
     private String image;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private DroneEntity drone;
 
     public MedicationEntity() {
@@ -58,6 +58,14 @@ public class MedicationEntity {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public DroneEntity getDrone() {
+        return drone;
+    }
+
+    public void setDrone(DroneEntity drone) {
+        this.drone = drone;
     }
 }
 

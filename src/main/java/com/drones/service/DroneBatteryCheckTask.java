@@ -25,6 +25,7 @@ public class DroneBatteryCheckTask implements Runnable {
         this.droneBatteryLevelAuditLogRepository = droneBatteryLevelAuditLogRepository;
     }
 
+    // Periodic task to check drones battery levels and create history/audit event log
     @Override
     public void run() {
         List<DroneEntity> drones = droneRepository.findAll();

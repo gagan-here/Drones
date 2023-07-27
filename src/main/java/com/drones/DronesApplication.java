@@ -23,6 +23,8 @@ public class DronesApplication {
 
 
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+
+        // Schedules a task to periodically check the battery level of a drone using a given executor service.
         executorService.scheduleAtFixedRate(droneBatteryCheckTask, 0, 1, TimeUnit.SECONDS);
     }
 
