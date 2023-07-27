@@ -1,5 +1,6 @@
 package com.drones.enums;
 
+
 public enum DroneModel {
     LIGHTWEIGHT,
     MIDDLEWEIGHT,

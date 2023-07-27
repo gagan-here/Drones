@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DroneRepository extends JpaRepository<DroneEntity, String> {
-    DroneEntity findBySerialNumber(String serialNumber);
+public interface DroneRepository extends JpaRepository<DroneEntity, Long> {
+    Optional<DroneEntity> findBySerialNumber(String serialNumber);
     List<DroneEntity> findByState(DroneState droneState);
 }
 
