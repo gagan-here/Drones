@@ -6,7 +6,6 @@ import com.drones.entities.DroneBatteryLevelAuditLogEntity;
 import com.drones.entities.DroneEntity;
 import com.drones.entities.MedicationEntity;
 import com.drones.enums.DroneState;
-import com.drones.exception.DroneException;
 import com.drones.repository.DroneBatteryLevelAuditLogRepository;
 import com.drones.repository.DroneRepository;
 import com.drones.util.DroneResponse;
@@ -124,14 +123,12 @@ public class DroneService {
             List<MedicationDTO> loadedMedications = droneEntity.get().getLoadedMedications()
                 .stream()
                 .map(
-                    medicationEntity -> {
-                        MedicationDTO medicationDTO = new MedicationDTO();
-                        medicationDTO.setName(medicationEntity.getName());
-                        medicationDTO.setWeight(medicationEntity.getWeight());
-                        medicationDTO.setCode(medicationEntity.getCode());
-                        medicationDTO.setImage(medicationEntity.getImage());
-                        return medicationDTO;
-                    }
+                    medicationEntity -> new MedicationDTO(
+                        medicationEntity.getName(),
+                        medicationEntity.getWeight(),
+                        medicationEntity.getCode(),
+                        medicationEntity.getImage()
+                    )
                 ).collect(Collectors.toList());
             DroneResponse<List<MedicationDTO>> response = new DroneResponse<>(200,
                 "Loaded medications in drone retrieved successfully.", loadedMedications);

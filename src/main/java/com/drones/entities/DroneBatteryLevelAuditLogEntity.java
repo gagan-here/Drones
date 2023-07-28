@@ -27,9 +27,6 @@ public class DroneBatteryLevelAuditLogEntity {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Getters and setters
-
-
     public Long getId() {
         return id;
     }

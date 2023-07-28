@@ -11,7 +11,6 @@ public class DroneDTO {
     private int batteryCapacity;
     private DroneState state;
 
-    // Constructors
     public DroneDTO() {
 
     }
@@ -25,7 +24,6 @@ public class DroneDTO {
         this.state = state;
     }
 
-    // Getter and Setter methods
     public String getSerialNumber() {
         return serialNumber;
     }
