@@ -30,7 +30,6 @@ public class DroneEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "drone")
     private List<MedicationEntity> loadedMedications;
 
-    // Constructors
     public DroneEntity() {
 
     }
@@ -44,7 +43,6 @@ public class DroneEntity {
         this.state = state;
     }
 
-    // Getter and Setter methods
     public Long getId() {
         return id;
     }

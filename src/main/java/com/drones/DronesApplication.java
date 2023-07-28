@@ -21,7 +21,6 @@ public class DronesApplication {
     public static void main(String[] args) {
         SpringApplication.run(DronesApplication.class, args);
 
-
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
         // Schedules a task to periodically check the battery level of a drone using a given executor service.
